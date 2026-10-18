@@ -153,3 +153,9 @@ uv run --with fastapi --with uvicorn --with httpx --with pytest --with pytest-as
 ## 7. Contribución a la Comunidad Upstream (Nanobrowser)
 
 Hemos abierto el **Issue oficial [#367](https://github.com/nanobrowser/nanobrowser/issues/367)** en el repositorio oficial de Nanobrowser exponiendo la limitación actual del proveedor `openai-compatible` (ausencia de soporte para cabeceras HTTP arbitrarias como `x-opencode-session`), proponiendo los cambios exactos en `src/llm/providers.ts` (`ModelSpec.headers` y paso de cabeceras a `@ai-sdk/openai`) y ofreciendo este proxy como solución funcional inmediata para la comunidad.
+
+---
+
+## 8. Licencia
+
+Este proyecto está distribuido bajo los términos de la licencia **GNU Affero General Public License v3.0 (AGPL-3.0)**. Consulta el archivo [LICENSE](LICENSE) para más información.
