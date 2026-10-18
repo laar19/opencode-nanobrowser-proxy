@@ -7,17 +7,36 @@ from fastapi.responses import JSONResponse, StreamingResponse
 import httpx
 import uvicorn
 
-from .config import (
-    DEFAULT_MODEL,
-    LOG_LEVEL,
-    OPENCODE_API_KEY,
-    OPENCODE_CHAT_ENDPOINT,
-    OPENCODE_MODELS_ENDPOINT,
-    PROXY_HOST,
-    PROXY_PORT,
-    mask_key,
-)
-from .session_manager import SessionManager
+import os
+import sys
+
+# Ensure directory of this file is in sys.path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+try:
+    from config import (
+        DEFAULT_MODEL,
+        LOG_LEVEL,
+        OPENCODE_API_KEY,
+        OPENCODE_CHAT_ENDPOINT,
+        OPENCODE_MODELS_ENDPOINT,
+        PROXY_HOST,
+        PROXY_PORT,
+        mask_key,
+    )
+    from session_manager import SessionManager
+except (ImportError, ValueError):
+    from .config import (
+        DEFAULT_MODEL,
+        LOG_LEVEL,
+        OPENCODE_API_KEY,
+        OPENCODE_CHAT_ENDPOINT,
+        OPENCODE_MODELS_ENDPOINT,
+        PROXY_HOST,
+        PROXY_PORT,
+        mask_key,
+    )
+    from .session_manager import SessionManager
 
 logging.basicConfig(
     level=getattr(logging, LOG_LEVEL, logging.INFO),
@@ -251,7 +270,7 @@ async def chat_completions(request: Request):
 
 def run():
     uvicorn.run(
-        "opencode_proxy.main:app",
+        app,
         host=PROXY_HOST,
         port=PROXY_PORT,
         log_level=LOG_LEVEL.lower(),

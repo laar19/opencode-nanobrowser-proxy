@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opencode-nanobrowser-proxy"
+version = "1.0.0"
+description = "Local OpenAI-compatible proxy bridging Nanobrowser with OpenCode Go"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.22.0",
+    "httpx>=0.25.0",
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+]
+
+[tool.setuptools]
+py-modules = ["main", "config", "session_manager"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "strict"

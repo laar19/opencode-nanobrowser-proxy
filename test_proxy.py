@@ -4,8 +4,20 @@ from fastapi.testclient import TestClient
 import httpx
 from unittest.mock import AsyncMock, patch
 
-from opencode_proxy.main import app, session_manager
-from opencode_proxy.session_manager import SessionManager
+import os
+import sys
+
+# Ensure repository root is on sys.path
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+
+try:
+    import main as main_module
+    from main import app, session_manager
+    from session_manager import SessionManager
+except (ImportError, ValueError):
+    from opencode_proxy import main as main_module
+    from opencode_proxy.main import app, session_manager
+    from opencode_proxy.session_manager import SessionManager
 
 client = TestClient(app)
 
@@ -100,7 +112,7 @@ async def test_chat_completions_injection_and_forwarding():
             },
         )
 
-    with patch("opencode_proxy.main.http_client.post", side_effect=mock_post):
+    with patch.object(main_module.http_client, "post", side_effect=mock_post):
         payload = {
             "model": "deepseek-v4.1-flash",
             "messages": [{"role": "user", "content": "Test prompt"}],
@@ -136,7 +148,7 @@ async def test_models_forwarding():
             },
         )
 
-    with patch("opencode_proxy.main.http_client.get", side_effect=mock_get):
+    with patch.object(main_module.http_client, "get", side_effect=mock_get):
         response = client.get("/v1/models")
         assert response.status_code == 200
         data = response.json()

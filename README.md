@@ -139,23 +139,71 @@ systemctl --user restart opencode-proxy.service
 systemctl --user stop opencode-proxy.service
 ```
 
----
-
-## 6. Pruebas Automatizadas
-
-Para validar que el proxy funciona correctamente de extremo a extremo:
+### D. Despliegue con Docker / Docker Compose
+Si prefieres contenedores o estás en un entorno aislado:
 ```bash
-uv run --with fastapi --with uvicorn --with httpx --with pytest --with pytest-asyncio --with python-dotenv python -m pytest test_proxy.py
+# Iniciar en segundo plano
+docker compose up -d
+
+# Ver logs
+docker compose logs -f
+
+# Detener
+docker compose down
 ```
 
 ---
 
-## 7. Contribución a la Comunidad Upstream (Nanobrowser)
+## 6. Instrucciones para Agentes de IA / Despliegue Automatizado
+
+Si eres un **agente de IA** (o un script de automatización) desplegando este servicio en una máquina destino, sigue este flujo unificado:
+
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/laar19/opencode-nanobrowser-proxy.git
+cd opencode-nanobrowser-proxy
+
+# 2. Configurar la clave de OpenCode
+cp .env.example .env
+echo "OPENCODE_API_KEY=oc_sk_tu_clave_aqui" > .env
+
+# 3. Lanzar según el entorno disponible:
+# Opción A (Recomendada con uv):
+uv run python main.py
+
+# Opción B (Python tradicional / venv):
+python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && python main.py
+
+# Opción C (Docker):
+docker compose up -d
+
+# Opción D (Linux systemd autostart):
+chmod +x install_linux_service.sh start_linux.sh && ./install_linux_service.sh
+
+# 4. Verificar salud del servicio:
+curl -s http://127.0.0.1:8080/health
+# Esperado: {"status":"ok","proxy_version":"1.0.0",...}
+```
+
+---
+
+## 7. Pruebas Automatizadas
+
+Para validar que el proxy funciona correctamente de extremo a extremo:
+```bash
+uv run --extra test pytest
+# o con pytest tradicional:
+pytest test_proxy.py
+```
+
+---
+
+## 8. Contribución a la Comunidad Upstream (Nanobrowser)
 
 Hemos abierto el **Issue oficial [#367](https://github.com/nanobrowser/nanobrowser/issues/367)** en el repositorio oficial de Nanobrowser exponiendo la limitación actual del proveedor `openai-compatible` (ausencia de soporte para cabeceras HTTP arbitrarias como `x-opencode-session`), proponiendo los cambios exactos en `src/llm/providers.ts` (`ModelSpec.headers` y paso de cabeceras a `@ai-sdk/openai`) y ofreciendo este proxy como solución funcional inmediata para la comunidad.
 
 ---
 
-## 8. Licencia
+## 9. Licencia
 
 Este proyecto está distribuido bajo los términos de la licencia **GNU Affero General Public License v3.0 (AGPL-3.0)**. Consulta el archivo [LICENSE](LICENSE) para más información.
