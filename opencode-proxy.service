@@ -1,0 +1,14 @@
+[Unit]
+Description=OpenCode Go Proxy for Nanobrowser
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/opencode-proxy
+ExecStart=%h/opencode-proxy/start_linux.sh
+Restart=always
+RestartSec=5
+EnvironmentFile=-%h/opencode-proxy/.env
+
+[Install]
+WantedBy=default.target
