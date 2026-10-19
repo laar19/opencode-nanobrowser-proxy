@@ -198,12 +198,57 @@ pytest test_proxy.py
 
 ---
 
-## 8. Contribución a la Comunidad Upstream (Nanobrowser)
+## 8. Solución de Problemas Frecuentes (Troubleshooting)
+
+### Error: `Failed to fetch` / `Retry` en Nanobrowser
+
+Si en Nanobrowser aparece el mensaje de error en rojo `Failed to fetch` con un botón `Retry`, significa que la extensión no puede comunicarse con `http://127.0.0.1:8080/v1` porque el servicio del proxy no está en ejecución.
+
+#### Diagnóstico rápido:
+Ejecuta en tu terminal:
+```bash
+# Windows (PowerShell / CMD) o Linux / macOS
+curl http://127.0.0.1:8080/health
+```
+- **Si responde `{"status":"ok", ...}`:** El proxy está funcionando. Revisa que en Nanobrowser el *Server address* esté configurado exactamente como `http://127.0.0.1:8080/v1`.
+- **Si no responde (error de conexión / timeout):** El proceso del proxy no está levantado.
+
+#### Solución por plataforma:
+
+* **En Windows:**
+  1. Haz doble clic en el archivo `start_windows_background.vbs` dentro de la carpeta del proxy (se iniciará de forma invisible en segundo plano).
+  2. *(Opcional)* Si prefieres ver la consola con los logs en tiempo real, ejecuta `start_windows.bat`.
+  3. *(Persistencia al reiniciar)* Recuerda que el proxy se inicia automáticamente al encender la PC si tienes el script en tu carpeta de inicio:
+     `%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\opencode_proxy_startup.vbs`.
+
+* **En Linux:**
+  1. Si configuraste systemd, verifica o reinicia el servicio de usuario:
+     ```bash
+     systemctl --user restart opencode-proxy.service
+     systemctl --user status opencode-proxy.service
+     ```
+  2. Si lo ejecutas manualmente o con `uv`:
+     ```bash
+     ./start_linux.sh
+     # o bien:
+     uv run python main.py
+     ```
+  3. Si usas Docker:
+     ```bash
+     docker compose up -d
+     ```
+
+* **Paso final en Nanobrowser:**
+  Una vez que el proxy esté respondiendo, pulsa el botón **`Retry`** (o el botón de prueba de conexión junto a `deepseek-v4.1-flash`) en Nanobrowser. Conectará de inmediato en verde: `"Connected. The model called the test tool"`.
+
+---
+
+## 9. Contribución a la Comunidad Upstream (Nanobrowser)
 
 Hemos abierto el **Issue oficial [#367](https://github.com/nanobrowser/nanobrowser/issues/367)** en el repositorio oficial de Nanobrowser exponiendo la limitación actual del proveedor `openai-compatible` (ausencia de soporte para cabeceras HTTP arbitrarias como `x-opencode-session`), proponiendo los cambios exactos en `src/llm/providers.ts` (`ModelSpec.headers` y paso de cabeceras a `@ai-sdk/openai`) y ofreciendo este proxy como solución funcional inmediata para la comunidad.
 
 ---
 
-## 9. Licencia
+## 10. Licencia
 
 Este proyecto está distribuido bajo los términos de la licencia **GNU Affero General Public License v3.0 (AGPL-3.0)**. Consulta el archivo [LICENSE](LICENSE) para más información.
