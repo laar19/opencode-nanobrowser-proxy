@@ -77,17 +77,20 @@ Este proxy actúa como un puente de compatibilidad transparente:
 
 ## 4. Despliegue y Autostart en Windows
 
-### A. Ejecución manual
-* **Primer plano:** Doble clic en `start_windows.bat`.
-* **Segundo plano (sin ventana negra):** Doble clic en `start_windows_background.vbs`.
+### A. Instalación con Inicio Automático Permanente (Recomendado)
+Para que el proxy se ejecute como un **servicio independiente en segundo plano**, que **nunca se cierre aunque cierres Antigravity o la terminal**, y que arranque automáticamente con Windows:
 
-### B. Inicio automático con el encendido de Windows
-El instalador coloca un script en tu carpeta de inicio de Windows:
-`%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\opencode_proxy_startup.vbs`
+1. Haz doble clic en `install_windows_autostart.bat`.
+2. Esto registrará el proxy tanto en el Registro de Windows (`HKCU\Software\Microsoft\Windows\CurrentVersion\Run`) como en la carpeta de Inicio (`Startup`), y lo lanzará de inmediato en segundo plano desacoplado de cualquier editor o terminal.
 
-Para configurarlo o verificarlo:
+### B. Control Manual y Scripts
+* **Iniciar en segundo plano:** Doble clic en `start_windows_background.vbs`.
+* **Iniciar con consola de logs visible:** Doble clic en `start_windows.bat`.
+* **Detener el proxy:** Doble clic en `stop_windows.bat`.
+* **Desinstalar el inicio automático:** Doble clic en `uninstall_windows_autostart.bat`.
+
+### C. Comprobar estado del servicio
 ```powershell
-# Comprobar que el proxy responde
 curl.exe http://127.0.0.1:8080/health
 ```
 
